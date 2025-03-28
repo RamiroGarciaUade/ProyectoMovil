@@ -1,6 +1,6 @@
 package com.proyecto.uade.GestionTurnoProfesionalSalud.model;
 
-public class Specialty {
+public class History {
     private Long id;
-    private String name;
+    private List<Appointment> appointments;
 }

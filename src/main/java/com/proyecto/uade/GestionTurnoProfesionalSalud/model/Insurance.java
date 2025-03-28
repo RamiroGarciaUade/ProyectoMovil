@@ -1,6 +1,6 @@
 package com.proyecto.uade.GestionTurnoProfesionalSalud.model;
 
-public class Specialty {
+public class Insurance {
     private Long id;
     private String name;
 }

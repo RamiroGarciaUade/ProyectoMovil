@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class Professional {
-    private int professionalID;
+    private Long id;
     private String firstName;
     private String lastName;
-    private int specialtyID;
+    private Specialty specialty;
 }
