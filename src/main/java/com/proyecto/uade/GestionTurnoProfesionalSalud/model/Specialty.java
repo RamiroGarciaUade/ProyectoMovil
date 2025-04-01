@@ -1,11 +1,20 @@
 package com.proyecto.uade.GestionTurnoProfesionalSalud.model;
 
-import lombok.Builder;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data
-@Builder
+@Entity
+@Table(name="specialties")
 public class Specialty {
-    private int specialtyID;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long specialtyID;
+    @Column(nullable = false)
     private String name;
 }
