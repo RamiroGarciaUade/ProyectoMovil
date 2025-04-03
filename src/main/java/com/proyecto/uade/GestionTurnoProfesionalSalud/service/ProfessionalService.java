@@ -5,10 +5,12 @@ import com.proyecto.uade.GestionTurnoProfesionalSalud.model.Professional;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.repository.IProfessionalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+@Service
 public class ProfessionalService implements IService<Professional, ProfessionalDTO>{
     private IProfessionalRepository iProfessionalRepository;
 
@@ -43,8 +45,8 @@ public class ProfessionalService implements IService<Professional, ProfessionalD
 
     @Override
     public Professional update(Long id, ProfessionalDTO dto) {
-        Professional p = this.find(id);
-        return null;
+        Professional professional = this.find(id);
+        return this.save(dto.update(professional));
     }
 
 }
