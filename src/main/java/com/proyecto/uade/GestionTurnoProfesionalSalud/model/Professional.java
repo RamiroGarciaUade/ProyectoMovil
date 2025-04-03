@@ -3,7 +3,7 @@ package com.proyecto.uade.GestionTurnoProfesionalSalud.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="professional")
+@Table(name="professionals")
 public class Professional {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,5 +12,8 @@ public class Professional {
     private String firstName;
     @Column
     private String lastName;
+    @ManyToOne
+    @JoinColumn(name = "specialty_id")
     private Specialty specialty;
+
 }
