@@ -1,5 +1,7 @@
 package com.proyecto.uade.GestionTurnoProfesionalSalud.repository;
+import com.proyecto.uade.GestionTurnoProfesionalSalud.model.Specialty;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public class ISpecialtyRepository {
-    
+public interface ISpecialtyRepository extends JpaRepository<Specialty,Long> {
+
 }
