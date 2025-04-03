@@ -26,6 +26,13 @@ public class Professional {
         this.lastName = lastName;
     }
 
+    public Professional(Long id, String firstName, String lastName, Specialty specialty) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.specialty = specialty;
+    }
+
     //Getters
     public Long getId() {
         return id;
