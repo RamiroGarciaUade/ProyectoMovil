@@ -1,5 +1,5 @@
 package com.proyecto.uade.GestionTurnoProfesionalSalud.service;
 
-public class ServiceProfessional {
+public class SpecialtyService {
     
 }
