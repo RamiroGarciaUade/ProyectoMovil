@@ -8,5 +8,5 @@ public class User {
     private String password;
     private int phoneNumber;
     private Insurance insurance;
-    private History history;
+
 }
