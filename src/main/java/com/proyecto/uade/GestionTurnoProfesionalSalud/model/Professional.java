@@ -1,27 +1,71 @@
 package com.proyecto.uade.GestionTurnoProfesionalSalud.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name="professionales")
+@Table(name="professionals")
 public class Professional {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long professionalID;
-    @Column(nullable = false)
+    private Long id;
+    @Column
     private String firstName;
-    @Column(nullable = false)
+    @Column
     private String lastName;
-    
-    @OneToOne
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "specialty_id")
     private Specialty specialty;
+
+    //Constructor
+    public Professional(){
+
+    }
+    public Professional(Long id, String firstName, String lastName){
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public Professional(Long id, String firstName, String lastName, Specialty specialty) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.specialty = specialty;
+    }
+
+    //Getters
+    public Long getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public Specialty getSpecialty() {
+        return specialty;
+    }
+    // Setters
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setSpecialty(Specialty specialty) {
+        this.specialty = specialty;
+    }
 }

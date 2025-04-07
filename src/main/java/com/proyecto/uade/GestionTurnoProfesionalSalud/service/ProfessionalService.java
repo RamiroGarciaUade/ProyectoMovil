@@ -1,27 +1,60 @@
 package com.proyecto.uade.GestionTurnoProfesionalSalud.service;
-import com.proyecto.uade.GestionTurnoProfesionalSalud.exceptions.ProfessionalDuplicate;
+
+import com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command.ProfessionalDTO;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.model.Professional;
+import com.proyecto.uade.GestionTurnoProfesionalSalud.repository.IProfessionalRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
 
 @Service
-public interface ProfessionalService {
-    public List<Professional> getProfessionales();
+public class ProfessionalService implements IService<Professional, ProfessionalDTO>{
+    private IProfessionalRepository iProfessionalRepository;
 
-    public Optional<Professional> getProfessionalById(Long professionalId);
+    public ProfessionalService(IProfessionalRepository iProfessionalRepository){
+        this.iProfessionalRepository = iProfessionalRepository;
+    }
 
-    public List<Professional> findByProfessionalFirstName(String firstName);
+    
+    public List<Professional> findByProfessionalFirstName(String firstName) {
+        return iProfessionalRepository.findByFirstName(firstName);
+    }
+    
+    public List<Professional> findBySpecialty(String specialtyName) {
+        return iProfessionalRepository.findBySpecialty_Name(specialtyName);
+    }
 
-    public List<Professional> findBySpecialtyName(String name);
+    @Override
+    public List<Professional> list() {
 
-    public ResponseEntity<Professional> updateProfessional(Professional professional);
+        return iProfessionalRepository.findAll();
+    }
 
-    public Professional createProfessional(Professional professional) throws ProfessionalDuplicate;
+    @Override
+    public Professional save(ProfessionalDTO dto) {
+        Professional p = new Professional();
+        return iProfessionalRepository.save(p);
+    }
 
-    public ResponseEntity<String> deleteProfessionalById(Long id);
+
+    @Override
+    public Professional find(Long id) {
+
+        return iProfessionalRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public void delete(Long id) {
+        this.find(id);
+        iProfessionalRepository.deleteById(id);
+    }
+
+    @Override
+    public Professional update(Long id, ProfessionalDTO dto) {
+        Professional professional = this.find(id);
+        return this.save(dto.update(professional));
+    }
+
 }
