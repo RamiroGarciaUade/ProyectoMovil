@@ -10,12 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//pongo un comentario
-// ejemplo
-//ejemplo
-
-//comentario
-
 @RestController
 @RequestMapping("/professionals")
 public class ProfessionalController {
