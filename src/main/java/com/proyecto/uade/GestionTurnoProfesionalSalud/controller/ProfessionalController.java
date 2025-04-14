@@ -32,6 +32,11 @@ public class ProfessionalController {
         return ResponseEntity.ok(professional);
     }
 
+    @GetMapping("/specialty/{name}")
+    public ResponseEntity<List<Professional>>  listBySpecialty(@PathVariable String name) {
+        return ResponseEntity.ok(professionalService.listBySpecialty(name));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id){
         professionalService.delete(id);

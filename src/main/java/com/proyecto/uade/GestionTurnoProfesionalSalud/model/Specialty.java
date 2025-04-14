@@ -1,5 +1,10 @@
 package com.proyecto.uade.GestionTurnoProfesionalSalud.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "specialties")
@@ -11,6 +16,11 @@ public class Specialty {
 
     @Column
     private String name;
+
+    @OneToMany(mappedBy = "specialty")
+    @JsonIgnore
+    private Set<Professional> professionals = new HashSet<>();
+
 
     //Constructor
     public Specialty(){
