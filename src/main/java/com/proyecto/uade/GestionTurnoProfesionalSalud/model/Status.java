@@ -19,4 +19,12 @@ public class Status {
     @OneToMany(mappedBy = "status")
     @JsonIgnore
     private Set<Appointment> appointments = new HashSet<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

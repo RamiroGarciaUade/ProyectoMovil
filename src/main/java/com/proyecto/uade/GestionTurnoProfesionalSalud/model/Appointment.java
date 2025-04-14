@@ -43,6 +43,8 @@ public class Appointment {
 
     //Constructors
 
+    public Appointment() {
+    }
 
     public Appointment(Long id, LocalDate date, LocalTime startTime, LocalTime finishTime, String notes) {
         this.id = id;
@@ -73,6 +75,15 @@ public class Appointment {
         this.notes = notes;
         this.status = status;
         this.medicalExams = medicalExams;
+    }
+
+    public Appointment(Long id, User user, Professional professional, LocalDate date, LocalTime startTime, LocalTime finishTime) {
+        this.id = id;
+        this.user = user;
+        this.professional = professional;
+        this.date = date;
+        this.startTime = startTime;
+        this.finishTime = finishTime;
     }
 
     //Getters
