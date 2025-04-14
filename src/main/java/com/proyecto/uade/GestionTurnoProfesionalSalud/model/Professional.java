@@ -13,7 +13,7 @@ public class Professional {
     @Column
     private String lastName;
     @ManyToOne
-    @JoinColumn(name = "specialty_id")
+    @JoinColumn(name = "specialty_id",referencedColumnName = "id")
     private Specialty specialty;
 
     //Constructor

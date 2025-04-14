@@ -10,12 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//pongo un comentario
-// ejemplo
-//ejemplo
-
-//comentario
-
 @RestController
 @RequestMapping("/professionals")
 public class ProfessionalController {
@@ -36,6 +30,11 @@ public class ProfessionalController {
     public ResponseEntity<Professional> find(@PathVariable Long id){
         Professional professional = professionalService.find(id);
         return ResponseEntity.ok(professional);
+    }
+
+    @GetMapping("/specialty/{name}")
+    public ResponseEntity<List<Professional>>  listBySpecialty(@PathVariable String name) {
+        return ResponseEntity.ok(professionalService.listBySpecialty(name));
     }
 
     @DeleteMapping("/{id}")
