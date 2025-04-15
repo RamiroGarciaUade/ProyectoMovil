@@ -8,4 +8,9 @@ public class MedicalExam {
     private String examName;
     private Integer diagnosticId;
     private Integer appointmentId;
+
+    @ElementCollection
+    private List<String> images;
+
+    // Getters y setters
 }
