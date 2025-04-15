@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Permitir el seguimiento de application.properties en target
+!target/**/application.properties
