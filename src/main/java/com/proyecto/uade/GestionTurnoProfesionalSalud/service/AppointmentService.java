@@ -39,9 +39,16 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
 
     @Override
     public Appointment save(AppointmentDTO appointment) {
-        User user = iUserRepository.findById(appointment.getUserId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        Professional professional = iProfessionalRepository.findById(appointment.getProfessionalId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        Status status = iStatusRepository.findById(appointment.getStatusId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User user = iUserRepository.findById(appointment.getUserId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Professional professional = iProfessionalRepository.findById(appointment.getProfessionalId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professional not found"));
+
+        // IGNORAR statusId del DTO y usar siempre el status "disponible"
+        Status status = iStatusRepository.findByValue("Disponible")
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Status 'disponible' no encontrado"));
+
         Appointment a = appointment.newAppointment(user, professional, status);
         return iAppointmentRepository.save(a);
     }
@@ -60,6 +67,18 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
     @Override
     public Appointment update(Long id, AppointmentDTO dto) {
         Appointment appointment = this.find(id);
-        return this.save(dto.update(appointment));
+
+        if (dto.getNotes() != null && dto.getNotes().length() <= AppointmentDTO.NOTES_MAX_LENGTH) {
+            appointment.setNotes(dto.getNotes());
+        }
+
+        if (dto.getStatusId() != null) {
+            Status status = iStatusRepository.findById(dto.getStatusId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Status no encontrado"));
+            appointment.setStatus(status);
+        }
+
+        return iAppointmentRepository.save(appointment);
     }
+
 }

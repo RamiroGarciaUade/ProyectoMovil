@@ -4,6 +4,7 @@ import com.proyecto.uade.GestionTurnoProfesionalSalud.model.Appointment;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.model.MedicalExam;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class MedicalExamDTO implements Serializable {
     public static final int NAME_MAX_LENGTH = 100;
@@ -11,6 +12,8 @@ public class MedicalExamDTO implements Serializable {
     private Long id;
     private String name;
     private Long appointmentId;
+
+    private List<String> images;
 
     public MedicalExamDTO() {
     }
@@ -21,15 +24,25 @@ public class MedicalExamDTO implements Serializable {
         this.appointmentId = appointmentId;
     }
 
+    public MedicalExamDTO(Long id, String name, Long appointmentId, List<String> images) {
+        this.id = id;
+        this.name = name;
+        this.appointmentId = appointmentId;
+        this.images = images;
+    }
+
     public MedicalExam newMedicalExam(Appointment appointment){
         return new MedicalExam(this.id, this.name, appointment);
     }
 
-    public MedicalExamDTO update(MedicalExam exam){
-        if(this.name!= null && name.length() <= NAME_MAX_LENGTH)
-            exam.setName(this.name);
-        Long appointmentId = (this.appointmentId == null)? exam.getAppointment().getId() : this.appointmentId;
-        return new MedicalExamDTO(exam.getId(), exam.getName(), appointmentId);
+    public MedicalExam update(MedicalExam medicalExam) {
+        if (this.name != null && this.name.length() <= NAME_MAX_LENGTH)
+            medicalExam.setName(this.name);
+
+        if (this.images != null)
+            medicalExam.setImages(this.images);
+
+        return medicalExam;
     }
 
     public Long getId() {
@@ -54,5 +67,13 @@ public class MedicalExamDTO implements Serializable {
 
     public void setAppointmentId(Long appointmentId) {
         this.appointmentId = appointmentId;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 }

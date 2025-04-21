@@ -48,6 +48,6 @@ public class MedicalExamService implements IService<MedicalExam, MedicalExamDTO>
     @Override
     public MedicalExam update(Long id, MedicalExamDTO dto) {
         MedicalExam exam = this.find(id);
-        return this.save(dto.update(exam));
+        return iMedicalExamRepository.save(dto.update(exam));
     }
 }

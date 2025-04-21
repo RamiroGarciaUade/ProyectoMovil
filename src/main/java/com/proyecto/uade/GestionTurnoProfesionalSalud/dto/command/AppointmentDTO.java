@@ -27,12 +27,13 @@ public class AppointmentDTO {
     public AppointmentDTO() {
     }
 
-    public AppointmentDTO(Long id, Long userId, Long professionalId, LocalDate date, LocalTime startTime) {
+    public AppointmentDTO(Long id, Long userId, Long professionalId, LocalDate date, LocalTime startTime, LocalTime finishTime) {
         this.id = id;
         this.userId = userId;
         this.professionalId = professionalId;
         this.date = date;
         this.startTime = startTime;
+        this.finishTime = finishTime;
     }
 
     public AppointmentDTO(Long id, Long userId, Long professionalId, LocalDate date, LocalTime startTime, LocalTime finishTime, String notes, Long statusId) {
@@ -46,18 +47,54 @@ public class AppointmentDTO {
         this.statusId = statusId;
     }
 
+
     //methods
-    public Appointment newAppointment(User user, Professional professional, Status status){
-        return new Appointment(this.id, user, professional, this.date, this.startTime, this.finishTime);
+    public Appointment newAppointment(User user, Professional professional, Status forcedStatus) {
+        return new Appointment(
+                this.id,
+                user,
+                professional,
+                this.date,
+                this.startTime,
+                this.finishTime,
+                null, // notes no se agregan en create
+                forcedStatus // el status se setea desde el servicio
+        );
     }
-    public AppointmentDTO update(Appointment appointment){
-        if(this.notes!=null && notes.length() <= NOTES_MAX_LENGTH)
+
+    public Appointment update(Appointment appointment) {
+        if (this.notes != null && !this.notes.isBlank() && notes.length() <= NOTES_MAX_LENGTH) {
             appointment.setNotes(this.notes);
-        Long userId = ( this.userId == null )? appointment.getUser().getId() : this.userId;
-        Long professionalId = (this.professionalId == null)? appointment.getProfessional().getId() : this.professionalId;
-        Long statusId = (this.statusId == null)? appointment.getStatus().getId() : this.statusId;
-        return new AppointmentDTO(appointment.getId(), userId, professionalId, appointment.getDate(), appointment.getStartTime(), appointment.getFinishTime(), appointment.getNotes(), statusId);
+        }
+
+        if (this.date != null) {
+            appointment.setDate(this.date);
+        }
+
+        if (this.startTime != null) {
+            appointment.setStartTime(this.startTime);
+        }
+
+        if (this.finishTime != null) {
+            appointment.setFinishTime(this.finishTime);
+        }
+
+        if (this.professionalId != null) {
+            Professional professional = new Professional();
+            professional.setId(this.professionalId);
+            appointment.setProfessional(professional);
+        }
+
+        if (this.statusId != null) {
+            Status status = new Status();
+            status.setId(this.statusId);
+            appointment.setStatus(status);
+        }
+
+        return appointment;
     }
+
+
 
     //Getters
 
