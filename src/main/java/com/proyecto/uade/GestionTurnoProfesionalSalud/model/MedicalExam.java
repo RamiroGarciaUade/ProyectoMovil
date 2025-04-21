@@ -1,62 +1,70 @@
 package com.proyecto.uade.GestionTurnoProfesionalSalud.model;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "medicalexams")
+@Table(name = "medicalExams")
 public class MedicalExam {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "exam_name")
-    private String examName;
+    @Column
+    private String name;
 
-    @Column(name = "diagnostic_id")
-    private Integer diagnosticId;
-
-    @ElementCollection
-    @Column(name = "images")
+    @Column
     private List<String> images;
 
     @ManyToOne
     @JoinColumn(name = "appointment_id", referencedColumnName = "id")
     private Appointment appointment;
 
-    // Getters y setters
+    //Constructors
+    public MedicalExam() {
+    }
+
+    public MedicalExam(Long id, String name, Appointment appointment) {
+        this.id = id;
+        this.name = name;
+        this.appointment = appointment;
+        this.images = new ArrayList<>();
+    }
+
+    // Getters
 
     public Long getId() {
         return id;
     }
 
-    public String getExamName() {
-        return examName;
-    }
-
-    public void setExamName(String examName) {
-        this.examName = examName;
-    }
-
-    public Integer getDiagnosticId() {
-        return diagnosticId;
-    }
-
-    public void setDiagnosticId(Integer diagnosticId) {
-        this.diagnosticId = diagnosticId;
+    public String getName() {
+        return name;
     }
 
     public List<String> getImages() {
         return images;
     }
 
-    public void setImages(List<String> images) {
-        this.images = images;
-    }
-
     public Appointment getAppointment() {
         return appointment;
+    }
+
+
+    // Setters
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 
     public void setAppointment(Appointment appointment) {
