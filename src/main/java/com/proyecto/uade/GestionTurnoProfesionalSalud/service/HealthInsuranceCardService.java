@@ -54,6 +54,28 @@ public class HealthInsuranceCardService implements IService<HealthInsuranceCard,
     @Override
     public HealthInsuranceCard update(Long id, HealthInsuranceCardDTO dto) {
         HealthInsuranceCard card = this.find(id);
-        return this.save(dto.update(card));
+
+        if (dto.getCredentialNumber() != null) {
+            card.setCredentialNumber(dto.getCredentialNumber());
+        }
+
+        if (dto.getExpirationDate() != null) {
+            card.setExpirationDate(dto.getExpirationDate());
+        }
+
+        if (dto.getUserId() != null) {
+            User user = iUserRepository.findById(dto.getUserId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            card.setUser(user);
+        }
+
+        if (dto.getHealthcareProviderId() != null) {
+            HealthcareProvider provider = iHealthcareProviderRepository.findById(dto.getHealthcareProviderId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            card.setHealthcareProvider(provider);
+        }
+
+        return iHealthInsuranceCardRepository.save(card);
     }
+
 }

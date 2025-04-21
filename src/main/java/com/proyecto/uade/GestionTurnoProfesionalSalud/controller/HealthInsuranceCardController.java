@@ -40,7 +40,7 @@ public class HealthInsuranceCardController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HealthInsuranceCard> update(@PathVariable(name = "id") Long id, @RequestBody HealthInsuranceCardDTO card){
-        return ResponseEntity.ok(healthInsuranceCardService.update(id, card));
+    public HealthInsuranceCard update(@PathVariable Long id, @RequestBody HealthInsuranceCardDTO dto) {
+        return healthInsuranceCardService.update(id, dto);
     }
 }
