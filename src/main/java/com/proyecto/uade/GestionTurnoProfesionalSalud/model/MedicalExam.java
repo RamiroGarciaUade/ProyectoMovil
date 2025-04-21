@@ -16,7 +16,7 @@ public class MedicalExam {
     @Column
     private String name;
 
-    @Column
+    @ElementCollection
     private List<String> images;
 
     @ManyToOne
