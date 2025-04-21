@@ -40,7 +40,7 @@ public class AppointmentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Appointment> udpate(@PathVariable(name = "id") Long id, @RequestBody AppointmentDTO appointment) {
-        return ResponseEntity.ok(appointmentService.update(id, appointment));
+    public ResponseEntity<Appointment> update(@PathVariable Long id, @RequestBody AppointmentDTO dto){
+        return ResponseEntity.ok(appointmentService.update(id, dto));
     }
 }
