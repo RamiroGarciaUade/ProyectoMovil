@@ -9,15 +9,14 @@ import java.time.LocalDate;
 
 public class HealthInsuranceCardDTO implements Serializable {
     private Long id;
-    private int credentialNumber;
+    private Integer credentialNumber;
     private LocalDate expirationDate;
     private Long userId;
     private Long healthcareProviderId;
 
-    public HealthInsuranceCardDTO() {
-    }
+    public HealthInsuranceCardDTO() {}
 
-    public HealthInsuranceCardDTO(Long id, int credentialNumber, LocalDate expirationDate, Long userId, Long healthcareProviderId) {
+    public HealthInsuranceCardDTO(Long id, Integer credentialNumber, LocalDate expirationDate, Long userId, Long healthcareProviderId) {
         this.id = id;
         this.credentialNumber = credentialNumber;
         this.expirationDate = expirationDate;
@@ -25,8 +24,8 @@ public class HealthInsuranceCardDTO implements Serializable {
         this.healthcareProviderId = healthcareProviderId;
     }
 
-    public HealthInsuranceCard newHealthCareInsuranceCard(User user,HealthcareProvider healthcareProvider){
-        return new HealthInsuranceCard(this.id, this.credentialNumber, this.expirationDate, user, healthcareProvider);
+    public HealthInsuranceCard newHealthCareInsuranceCard(User user, HealthcareProvider provider) {
+        return new HealthInsuranceCard(this.id, this.credentialNumber, this.expirationDate, user, provider);
     }
 
     public HealthInsuranceCardDTO update(HealthInsuranceCard healthInsuranceCard){
@@ -39,36 +38,36 @@ public class HealthInsuranceCardDTO implements Serializable {
         return id;
     }
 
-    public int getCredentialNumber() {
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Integer getCredentialNumber() {
         return credentialNumber;
+    }
+
+    public void setCredentialNumber(Integer credentialNumber) {
+        this.credentialNumber = credentialNumber;
     }
 
     public LocalDate getExpirationDate() {
         return expirationDate;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public Long getHealthcareProviderId() {
-        return healthcareProviderId;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setCredentialNumber(int credentialNumber) {
-        this.credentialNumber = credentialNumber;
-    }
-
     public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Long getHealthcareProviderId() {
+        return healthcareProviderId;
     }
 
     public void setHealthcareProviderId(Long healthcareProviderId) {
