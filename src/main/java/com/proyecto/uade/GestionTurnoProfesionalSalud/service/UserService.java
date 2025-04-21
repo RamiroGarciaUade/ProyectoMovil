@@ -43,7 +43,8 @@ public class UserService implements IService<User, UserDTO> {
 
     @Override
     public User update(Long id, UserDTO dto) {
-        User u = this.find(id);
-        return this.save(dto.update(u));
+        User user = this.find(id);
+        UserDTO updatedDto = dto.update(user);
+        return iUserRepository.save(user);
     }
 }
