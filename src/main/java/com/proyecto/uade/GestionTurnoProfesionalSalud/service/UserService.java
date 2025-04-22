@@ -47,4 +47,10 @@ public class UserService implements IService<User, UserDTO> {
         UserDTO updatedDto = dto.update(user);
         return iUserRepository.save(user);
     }
+
+    public User login(String email, String password) {
+        return iUserRepository.findByEmail(email)
+                .filter(user -> user.getPassword().equals(password))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas"));
+    }
 }

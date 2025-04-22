@@ -1,6 +1,7 @@
 package com.proyecto.uade.GestionTurnoProfesionalSalud.controller;
 
 import com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command.UserDTO;
+import com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command.UserLoginDTO;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.model.User;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,4 +43,11 @@ public class UserController {
     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody UserDTO user) {
         return ResponseEntity.ok(userService.update(id, user));
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody UserLoginDTO loginDTO) {
+        User user = userService.login(loginDTO.getEmail(), loginDTO.getPassword());
+        return ResponseEntity.ok(user);
+    }
+
 }
