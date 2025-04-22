@@ -92,4 +92,9 @@ public class AppointmentController {
         return ResponseEntity.ok(appointment);
     }
 
+    @GetMapping("/available")
+    public ResponseEntity<List<Appointment>> getAvailableAppointments() {
+        return ResponseEntity.ok(appointmentService.listAvailable());
+    }
+
 }

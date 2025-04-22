@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.text.Normalizer;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,17 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
 
     @Override
     public List<Appointment> list() {
-        return iAppointmentRepository.findAll();
+        return iAppointmentRepository.findAll().stream()
+                .peek(this::updateStatusIfExpired)
+                .collect(Collectors.toList());
+    }
+
+    public List<Appointment> listAvailable() {
+        return iAppointmentRepository.findAll().stream()
+                .peek(this::updateStatusIfExpired)
+                .filter(a -> a.getStatus().getValue().equalsIgnoreCase("Disponible"))
+                .filter(a -> !a.getDate().isBefore(LocalDate.now()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -58,7 +69,10 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
 
     @Override
     public Appointment find(Long id) {
-        return iAppointmentRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Appointment appointment = iAppointmentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        updateStatusIfExpired(appointment);
+        return appointment;
     }
 
     @Override
@@ -85,11 +99,18 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
     }
 
     public List<Appointment> getBySpecialty(Long specialtyId) {
-        return iAppointmentRepository.findByProfessional_Specialty_Id(specialtyId);
+        return iAppointmentRepository.findByProfessional_Specialty_Id(specialtyId).stream()
+                .peek(this::updateStatusIfExpired)
+                .filter(a -> !(a.getStatus().getValue().equalsIgnoreCase("Disponible") && a.getDate().isBefore(LocalDate.now())))
+                .collect(Collectors.toList());
     }
 
+
     public List<Appointment> getByProfessional(Long professionalId) {
-        return iAppointmentRepository.findByProfessional_Id(professionalId);
+        return iAppointmentRepository.findByProfessional_Id(professionalId).stream()
+                .peek(this::updateStatusIfExpired)
+                .filter(a -> !(a.getStatus().getValue().equalsIgnoreCase("Disponible") && a.getDate().isBefore(LocalDate.now())))
+                .collect(Collectors.toList());
     }
 
     private String normalize(String input) {
@@ -98,11 +119,28 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
                 .toLowerCase();
     }
 
+    private void updateStatusIfExpired(Appointment appointment) {
+        if (appointment.getStatus().getValue().equalsIgnoreCase("Agendado")) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime end = appointment.getDate().atTime(appointment.getFinishTime());
+
+            if (end.isBefore(now)) {
+                Status finalizado = iStatusRepository.findByValue("Finalizado")
+                        .orElseThrow(() -> new RuntimeException("Estado 'FINALIZADO' no encontrado"));
+                appointment.setStatus(finalizado);
+                iAppointmentRepository.save(appointment);
+            }
+        }
+    }
+
+
     public List<Appointment> searchAppointments(String specialty, String professional, LocalDate date) {
         String normSpecialty = specialty != null ? normalize(specialty) : null;
         String normProfessional = professional != null ? normalize(professional) : null;
 
         return iAppointmentRepository.findAll().stream()
+                .peek(this::updateStatusIfExpired)
+                .filter(a -> !(a.getStatus().getValue().equalsIgnoreCase("Disponible") && a.getDate().isBefore(LocalDate.now())))
                 .filter(a -> {
                     boolean match = true;
 
@@ -130,7 +168,8 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
         LocalDate today = referenceDate != null ? referenceDate : LocalDate.now();
 
         return iAppointmentRepository.findAll().stream()
-                .filter(a -> a.getUser().getId().equals(userId))
+                .filter(a -> a.getUser() != null && a.getUser().getId().equals(userId)) // ✅ FIX
+                .peek(this::updateStatusIfExpired)
                 .filter(a -> {
                     if (status != null) {
                         return normalize(a.getStatus().getValue()).equals(normalize(status));
