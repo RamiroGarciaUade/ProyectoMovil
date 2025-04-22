@@ -14,7 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.Normalizer;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService implements IService<Appointment, AppointmentDTO>{
@@ -79,6 +82,18 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
         }
 
         return iAppointmentRepository.save(appointment);
+    }
+
+    public List<Appointment> getBySpecialty(Long specialtyId) {
+        return iAppointmentRepository.findByProfessional_Specialty_Id(specialtyId);
+    }
+
+    public List<Appointment> getByProfessional(Long professionalId) {
+        return iAppointmentRepository.findByProfessional_Id(professionalId);
+    }
+
+    public List<Appointment> getByDate(LocalDate date) {
+        return iAppointmentRepository.findByDate(date);
     }
 
 }

@@ -5,10 +5,12 @@ import com.proyecto.uade.GestionTurnoProfesionalSalud.model.Appointment;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.service.AppointmentService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -43,4 +45,20 @@ public class AppointmentController {
     public ResponseEntity<Appointment> update(@PathVariable Long id, @RequestBody AppointmentDTO dto){
         return ResponseEntity.ok(appointmentService.update(id, dto));
     }
+
+    @GetMapping("/specialty/{specialtyId}")
+    public ResponseEntity<List<Appointment>> getBySpecialty(@PathVariable Long specialtyId) {
+        return ResponseEntity.ok(appointmentService.getBySpecialty(specialtyId));
+    }
+
+    @GetMapping("/professional/{professionalId}")
+    public ResponseEntity<List<Appointment>> getByProfessional(@PathVariable Long professionalId) {
+        return ResponseEntity.ok(appointmentService.getByProfessional(professionalId));
+    }
+
+    @GetMapping("/date/{date}")
+    public ResponseEntity<List<Appointment>> getByDate(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return ResponseEntity.ok(appointmentService.getByDate(date));
+    }
+
 }
