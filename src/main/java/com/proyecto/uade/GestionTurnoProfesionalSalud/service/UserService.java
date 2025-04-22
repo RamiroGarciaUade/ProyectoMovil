@@ -26,6 +26,9 @@ public class UserService implements IService<User, UserDTO> {
 
     @Override
     public User save(UserDTO user) {
+        if (iUserRepository.existsByEmailIgnoreCase(user.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
         User u = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getPhoneNumber());
         return iUserRepository.save(u);
     }
