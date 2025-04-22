@@ -126,5 +126,27 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
                 .collect(Collectors.toList());
     }
 
+    public List<Appointment> getAppointmentsForUser(Long userId, String status, LocalDate referenceDate, String time) {
+        LocalDate today = referenceDate != null ? referenceDate : LocalDate.now();
+
+        return iAppointmentRepository.findAll().stream()
+                .filter(a -> a.getUser().getId().equals(userId))
+                .filter(a -> {
+                    if (status != null) {
+                        return normalize(a.getStatus().getValue()).equals(normalize(status));
+                    }
+                    return true;
+                })
+                .filter(a -> {
+                    LocalDate date = a.getDate();
+                    return switch (time) {
+                        case "past" -> date.isBefore(today);
+                        case "upcoming" -> !date.isBefore(today);
+                        default -> true;
+                    };
+                })
+                .collect(Collectors.toList());
+    }
+
 
 }

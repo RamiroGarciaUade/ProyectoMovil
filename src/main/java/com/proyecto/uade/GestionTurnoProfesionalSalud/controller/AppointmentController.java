@@ -66,6 +66,17 @@ public class AppointmentController {
         return ResponseEntity.ok(results);
     }
 
+    @GetMapping("/my-appointments")
+    public ResponseEntity<List<Appointment>> getMyAppointments(
+            @RequestParam Long userId,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate referenceDate,
+            @RequestParam(required = false, defaultValue = "all") String time // values: all, past, upcoming
+    ) {
+        List<Appointment> results = appointmentService.getAppointmentsForUser(userId, status, referenceDate, time);
+        return ResponseEntity.ok(results);
+    }
+
 
 
 }
