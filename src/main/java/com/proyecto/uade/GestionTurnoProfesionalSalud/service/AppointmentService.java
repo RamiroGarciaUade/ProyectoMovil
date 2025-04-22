@@ -96,4 +96,30 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
         return iAppointmentRepository.findByDate(date);
     }
 
+    public List<Appointment> getAppointmentsBySpecialty(String name) {
+        String normalizedInput = normalize(name);
+
+        return iAppointmentRepository.findAll().stream()
+                .filter(a -> normalize(a.getProfessional().getSpecialty().getName()).equals(normalizedInput))
+                .collect(Collectors.toList());
+    }
+
+    private String normalize(String input) {
+        return Normalizer.normalize(input, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                .toLowerCase();
+    }
+    public List<Appointment> getAppointmentsByProfessional(String name) {
+        String normalizedInput = normalize(name);
+
+        return iAppointmentRepository.findAll().stream()
+                .filter(a -> {
+                    String normalizedFirstName = normalize(a.getProfessional().getFirstName());
+                    String normalizedLastName = normalize(a.getProfessional().getLastName());
+                    return normalizedFirstName.contains(normalizedInput) || normalizedLastName.contains(normalizedInput);
+                })
+                .collect(Collectors.toList());
+    }
+
+
 }

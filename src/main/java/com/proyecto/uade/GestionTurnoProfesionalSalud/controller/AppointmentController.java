@@ -46,12 +46,12 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.update(id, dto));
     }
 
-    @GetMapping("/specialty/{specialtyId}")
+    @GetMapping("/specialtyId/{specialtyId}")
     public ResponseEntity<List<Appointment>> getBySpecialty(@PathVariable Long specialtyId) {
         return ResponseEntity.ok(appointmentService.getBySpecialty(specialtyId));
     }
 
-    @GetMapping("/professional/{professionalId}")
+    @GetMapping("/professionalId/{professionalId}")
     public ResponseEntity<List<Appointment>> getByProfessional(@PathVariable Long professionalId) {
         return ResponseEntity.ok(appointmentService.getByProfessional(professionalId));
     }
@@ -60,5 +60,19 @@ public class AppointmentController {
     public ResponseEntity<List<Appointment>> getByDate(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return ResponseEntity.ok(appointmentService.getByDate(date));
     }
+
+    @GetMapping("/specialty")
+    public ResponseEntity<List<Appointment>> getAppointmentsBySpecialty(@RequestParam String name) {
+        List<Appointment> results = appointmentService.getAppointmentsBySpecialty(name);
+        return ResponseEntity.ok(results);
+    }
+
+    @GetMapping("/professional")
+    public ResponseEntity<List<Appointment>> getAppointmentsByProfessional(@RequestParam String name) {
+        List<Appointment> results = appointmentService.getAppointmentsByProfessional(name);
+        return ResponseEntity.ok(results);
+    }
+
+
 
 }
