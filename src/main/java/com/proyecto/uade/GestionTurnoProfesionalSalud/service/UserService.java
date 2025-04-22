@@ -26,6 +26,9 @@ public class UserService implements IService<User, UserDTO> {
 
     @Override
     public User save(UserDTO user) {
+        if (iUserRepository.existsByEmailIgnoreCase(user.getEmail())) {
+            throw new IllegalArgumentException("El email ya está registrado");
+        }
         User u = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getPhoneNumber());
         return iUserRepository.save(u);
     }
@@ -46,5 +49,11 @@ public class UserService implements IService<User, UserDTO> {
         User user = this.find(id);
         UserDTO updatedDto = dto.update(user);
         return iUserRepository.save(user);
+    }
+
+    public User login(String email, String password) {
+        return iUserRepository.findByEmail(email)
+                .filter(user -> user.getPassword().equals(password))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas"));
     }
 }
