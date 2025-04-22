@@ -27,6 +27,25 @@ public class AppointmentDTO {
     public AppointmentDTO() {
     }
 
+    // Usado al crear turnos (libres, sin user)
+    public AppointmentDTO(Long id, Long professionalId, LocalDate date, LocalTime startTime, LocalTime finishTime, String notes, Long statusId) {
+        this.id = id;
+        this.professionalId = professionalId;
+        this.date = date;
+        this.startTime = startTime;
+        this.finishTime = finishTime;
+        this.notes = notes;
+        this.statusId = statusId;
+    }
+
+    public AppointmentDTO(Long id, Long professionalId, LocalDate date, LocalTime startTime, LocalTime finishTime) {
+        this.id = id;
+        this.professionalId = professionalId;
+        this.date = date;
+        this.startTime = startTime;
+        this.finishTime = finishTime;
+    }
+
     public AppointmentDTO(Long id, Long userId, Long professionalId, LocalDate date, LocalTime startTime, LocalTime finishTime) {
         this.id = id;
         this.userId = userId;
@@ -49,15 +68,13 @@ public class AppointmentDTO {
 
 
     //methods
-    public Appointment newAppointment(User user, Professional professional, Status forcedStatus) {
+    public Appointment newAppointment( Professional professional, Status forcedStatus) {
         return new Appointment(
                 this.id,
-                user,
                 professional,
                 this.date,
                 this.startTime,
                 this.finishTime,
-                null, // notes no se agregan en create
                 forcedStatus // el status se setea desde el servicio
         );
     }
@@ -96,7 +113,7 @@ public class AppointmentDTO {
 
 
 
-    //Getters
+    //Getters y setters
 
     public Long getId() {
         return id;

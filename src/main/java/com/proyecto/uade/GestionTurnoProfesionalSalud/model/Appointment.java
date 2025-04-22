@@ -46,12 +46,13 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(Long id, LocalDate date, LocalTime startTime, LocalTime finishTime, String notes) {
+    public Appointment(Long id, Professional professional, LocalDate date, LocalTime startTime, LocalTime finishTime, Status status) {
         this.id = id;
+        this.professional = professional;
         this.date = date;
         this.startTime = startTime;
         this.finishTime = finishTime;
-        this.notes = notes;
+        this.status = status;
     }
 
     public Appointment(Long id, User user, Professional professional, LocalDate date, LocalTime startTime, LocalTime finishTime, String notes, Status status) {
@@ -85,6 +86,8 @@ public class Appointment {
         this.startTime = startTime;
         this.finishTime = finishTime;
     }
+
+
 
     //Getters
 

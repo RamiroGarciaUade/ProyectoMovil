@@ -77,6 +77,14 @@ public class AppointmentController {
         return ResponseEntity.ok(results);
     }
 
+    @PutMapping("/{id}/schedule")
+    public ResponseEntity<Appointment> scheduleAppointment(
+            @PathVariable Long id,
+            @RequestParam Long userId
+    ) {
+        Appointment appointment = appointmentService.schedule(id, userId);
+        return ResponseEntity.ok(appointment);
+    }
 
 
 }

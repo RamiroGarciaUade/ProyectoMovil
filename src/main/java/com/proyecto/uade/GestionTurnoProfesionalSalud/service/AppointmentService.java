@@ -42,9 +42,9 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
 
     @Override
     public Appointment save(AppointmentDTO appointment) {
-        User user = iUserRepository.findById(appointment.getUserId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
+        if (appointment.getUserId() != null) {
+            throw new IllegalArgumentException("No se puede asignar un usuario al crear un turno. El turno debe crearse disponible.");
+        }
         Professional professional = iProfessionalRepository.findById(appointment.getProfessionalId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professional not found"));
 
@@ -52,7 +52,7 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
         Status status = iStatusRepository.findByValue("Disponible")
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Status 'disponible' no encontrado"));
 
-        Appointment a = appointment.newAppointment(user, professional, status);
+        Appointment a = appointment.newAppointment(professional, status);
         return iAppointmentRepository.save(a);
     }
 
@@ -147,6 +147,31 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
                 })
                 .collect(Collectors.toList());
     }
+
+    public Appointment schedule(Long appointmentId, Long userId) {
+        Appointment appointment = iAppointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+
+        if (appointment.getUser() != null) {
+            throw new RuntimeException("El turno ya está agendado");
+        }
+
+        if (!appointment.getStatus().getValue().equalsIgnoreCase("Disponible")) {
+            throw new RuntimeException("El turno no está disponible");
+        }
+
+        User user = iUserRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        Status agendado = iStatusRepository.findByValue("Agendado")
+                .orElseThrow(() -> new RuntimeException("Estado 'AGENDADO' no encontrado"));
+
+        appointment.setUser(user);
+        appointment.setStatus(agendado);
+
+        return iAppointmentRepository.save(appointment);
+    }
+
 
 
 }
