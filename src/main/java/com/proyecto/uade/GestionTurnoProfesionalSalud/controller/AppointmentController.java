@@ -56,23 +56,6 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getByProfessional(professionalId));
     }
 
-    @GetMapping("/date/{date}")
-    public ResponseEntity<List<Appointment>> getByDate(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return ResponseEntity.ok(appointmentService.getByDate(date));
-    }
-
-    @GetMapping("/specialty")
-    public ResponseEntity<List<Appointment>> getAppointmentsBySpecialty(@RequestParam String name) {
-        List<Appointment> results = appointmentService.getAppointmentsBySpecialty(name);
-        return ResponseEntity.ok(results);
-    }
-
-    @GetMapping("/professional")
-    public ResponseEntity<List<Appointment>> getAppointmentsByProfessional(@RequestParam String name) {
-        List<Appointment> results = appointmentService.getAppointmentsByProfessional(name);
-        return ResponseEntity.ok(results);
-    }
-
     @GetMapping("/search")
     public ResponseEntity<List<Appointment>> searchAppointments(
             @RequestParam(required = false) String specialty,

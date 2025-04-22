@@ -13,7 +13,5 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
 
     List<Appointment> findByProfessional_Id(Long professionalId);
 
-    List<Appointment> findByDate(LocalDate date);
-
 
 }
