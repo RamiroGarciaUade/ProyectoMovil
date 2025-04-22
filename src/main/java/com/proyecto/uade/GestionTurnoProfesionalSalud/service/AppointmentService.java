@@ -120,6 +120,33 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
                 })
                 .collect(Collectors.toList());
     }
+    public List<Appointment> searchAppointments(String specialty, String professional, LocalDate date) {
+        String normSpecialty = specialty != null ? normalize(specialty) : null;
+        String normProfessional = professional != null ? normalize(professional) : null;
+
+        return iAppointmentRepository.findAll().stream()
+                .filter(a -> {
+                    boolean match = true;
+
+                    if (normSpecialty != null) {
+                        String spec = normalize(a.getProfessional().getSpecialty().getName());
+                        match &= spec.equals(normSpecialty);
+                    }
+
+                    if (normProfessional != null) {
+                        String first = normalize(a.getProfessional().getFirstName());
+                        String last = normalize(a.getProfessional().getLastName());
+                        match &= (first.contains(normProfessional) || last.contains(normProfessional));
+                    }
+
+                    if (date != null) {
+                        match &= a.getDate().equals(date);
+                    }
+
+                    return match;
+                })
+                .collect(Collectors.toList());
+    }
 
 
 }

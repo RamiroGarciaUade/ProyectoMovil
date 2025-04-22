@@ -73,6 +73,16 @@ public class AppointmentController {
         return ResponseEntity.ok(results);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Appointment>> searchAppointments(
+            @RequestParam(required = false) String specialty,
+            @RequestParam(required = false) String professional,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        List<Appointment> results = appointmentService.searchAppointments(specialty, professional, date);
+        return ResponseEntity.ok(results);
+    }
+
 
 
 }
