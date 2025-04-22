@@ -172,6 +172,24 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
         return iAppointmentRepository.save(appointment);
     }
 
+    public Appointment cancel(Long appointmentId) {
+        Appointment appointment = iAppointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Turno no encontrado"));
+
+        if (appointment.getUser() == null || !appointment.getStatus().getValue().equalsIgnoreCase("AGENDADO")) {
+            throw new RuntimeException("Solo se pueden cancelar turnos agendados");
+        }
+
+        Status libre = iStatusRepository.findByValue("Disponible")
+                .orElseThrow(() -> new RuntimeException("Estado 'LIBRE' no encontrado"));
+
+        appointment.setUser(null);
+        appointment.setStatus(libre);
+
+        return iAppointmentRepository.save(appointment);
+    }
+
+
 
 
 }
