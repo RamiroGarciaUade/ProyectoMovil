@@ -1,36 +1,27 @@
 package com.proyecto.uade.GestionTurnoProfesionalSalud.model;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 @Entity
-@Table(name = "specialties")
-public class Specialty {
-
+@Table(name="healthcareProviders")
+public class HealthcareProvider {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column
     private String name;
 
-    @OneToMany(mappedBy = "specialty")
-    @JsonIgnore
-    private Set<Professional> professionals = new HashSet<>();
+    //Constructors
 
-
-    //Constructor
-    public Specialty(){
-
+    public HealthcareProvider() {
     }
-    public Specialty(Long id, String name){
+
+    public HealthcareProvider(Long id, String name) {
         this.id = id;
         this.name = name;
     }
-    // Getters
+
+    //Getters
 
     public Long getId() {
         return id;
@@ -39,7 +30,8 @@ public class Specialty {
     public String getName() {
         return name;
     }
-    //Setter
+
+    //Setters
 
     public void setId(Long id) {
         this.id = id;

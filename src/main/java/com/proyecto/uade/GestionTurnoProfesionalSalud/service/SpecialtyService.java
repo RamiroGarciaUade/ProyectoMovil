@@ -3,6 +3,7 @@ package com.proyecto.uade.GestionTurnoProfesionalSalud.service;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command.SpecialtyDTO;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.model.Specialty;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.repository.ISpecialtyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,12 +14,9 @@ import java.util.List;
 public class SpecialtyService implements IService<Specialty, SpecialtyDTO> {
     private ISpecialtyRepository iSpecialtyRepository;
 
+    @Autowired
     public SpecialtyService(ISpecialtyRepository iSpecialtyRepository){
         this.iSpecialtyRepository = iSpecialtyRepository;
-    }
-
-    public Specialty findByNameSpecialty(String name){
-        return iSpecialtyRepository.findByName(name);
     }
 
     @Override

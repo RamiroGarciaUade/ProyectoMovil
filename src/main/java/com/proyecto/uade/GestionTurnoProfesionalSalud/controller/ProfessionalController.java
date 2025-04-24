@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
-@RequestMapping("/professionals")
+@RequestMapping("/professional")
 public class ProfessionalController {
     @Autowired
     private ProfessionalService professionalService;
@@ -31,6 +30,11 @@ public class ProfessionalController {
     public ResponseEntity<Professional> find(@PathVariable Long id){
         Professional professional = professionalService.find(id);
         return ResponseEntity.ok(professional);
+    }
+
+    @GetMapping("/specialty/{name}")
+    public ResponseEntity<List<Professional>>  listBySpecialty(@PathVariable String name) {
+        return ResponseEntity.ok(professionalService.listBySpecialty(name));
     }
 
     @DeleteMapping("/{id}")
