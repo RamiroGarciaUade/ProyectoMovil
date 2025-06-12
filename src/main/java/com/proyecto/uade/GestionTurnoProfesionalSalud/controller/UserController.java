@@ -1,63 +1,54 @@
 package com.proyecto.uade.GestionTurnoProfesionalSalud.controller;
 
+import com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command.UserDTO;
+import com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command.UserLoginDTO;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.model.User;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
+    @PostMapping
+    public ResponseEntity<User> save(@RequestBody UserDTO user) {
+        return ResponseEntity.ok(userService.save(user));
+    }
+
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> list() {
+        return ResponseEntity.ok(userService.list());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        return userService.getUserById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) {
-        User user = new User();
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setPassword(userDTO.getPassword());
-        return ResponseEntity.ok(userService.createUser(user));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
-        User user = new User();
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setPassword(userDTO.getPassword());
-        User updated = userService.updateUser(id, user);
-        if (updated != null) {
-            return ResponseEntity.ok(updated);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<User> find(@PathVariable Long id) {
+        User user = userService.find(id);
+        return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        if (userService.deleteUser(id)) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody UserDTO user) {
+        return ResponseEntity.ok(userService.update(id, user));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, String>> login(@RequestBody UserLoginDTO loginDTO) {
+        Map<String, String> token = userService.login(loginDTO.getEmail(), loginDTO.getPassword());
+        return ResponseEntity.ok(token);
     }
 }
