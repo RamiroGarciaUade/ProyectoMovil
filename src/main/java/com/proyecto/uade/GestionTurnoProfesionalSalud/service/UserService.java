@@ -3,20 +3,31 @@ package com.proyecto.uade.GestionTurnoProfesionalSalud.service;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command.UserDTO;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.model.User;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.repository.IUserRepository;
+import com.proyecto.uade.GestionTurnoProfesionalSalud.config.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService implements IService<User, UserDTO> {
-    private IUserRepository iUserRepository;
+
+    private final IUserRepository iUserRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public UserService(IUserRepository iUserRepository) {
+    public UserService(IUserRepository iUserRepository,
+                       BCryptPasswordEncoder passwordEncoder,
+                       JwtUtil jwtUtil) {
         this.iUserRepository = iUserRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     @Override
@@ -25,17 +36,29 @@ public class UserService implements IService<User, UserDTO> {
     }
 
     @Override
-    public User save(UserDTO user) {
-        if (iUserRepository.existsByEmailIgnoreCase(user.getEmail())) {
+    public User save(UserDTO userDTO) {
+        if (iUserRepository.existsByEmailIgnoreCase(userDTO.getEmail())) {
             throw new IllegalArgumentException("El email ya está registrado");
         }
-        User u = new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getPhoneNumber());
-        return iUserRepository.save(u);
+
+        String encryptedPassword = passwordEncoder.encode(userDTO.getPassword());
+
+        User user = new User(
+                userDTO.getId(),
+                userDTO.getFirstName(),
+                userDTO.getLastName(),
+                userDTO.getEmail(),
+                encryptedPassword,
+                userDTO.getPhoneNumber()
+        );
+
+        return iUserRepository.save(user);
     }
 
     @Override
     public User find(Long id) {
-        return iUserRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return iUserRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -51,9 +74,12 @@ public class UserService implements IService<User, UserDTO> {
         return iUserRepository.save(user);
     }
 
-    public User login(String email, String password) {
-        return iUserRepository.findByEmail(email)
-                .filter(user -> user.getPassword().equals(password))
+    public Map<String, String> login(String email, String password) {
+        User user = iUserRepository.findByEmail(email)
+                .filter(u -> passwordEncoder.matches(password, u.getPassword()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas"));
+
+        String token = jwtUtil.generateToken(user.getEmail());
+        return Collections.singletonMap("token", token);
     }
 }

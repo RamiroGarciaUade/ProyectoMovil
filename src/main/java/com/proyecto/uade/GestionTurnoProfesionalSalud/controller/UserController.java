@@ -10,10 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
@@ -23,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>>  list() {
+    public ResponseEntity<List<User>> list() {
         return ResponseEntity.ok(userService.list());
     }
 
@@ -45,9 +47,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody UserLoginDTO loginDTO) {
-        User user = userService.login(loginDTO.getEmail(), loginDTO.getPassword());
-        return ResponseEntity.ok(user);
+    public ResponseEntity<Map<String, String>> login(@RequestBody UserLoginDTO loginDTO) {
+        Map<String, String> token = userService.login(loginDTO.getEmail(), loginDTO.getPassword());
+        return ResponseEntity.ok(token);
     }
-
 }
