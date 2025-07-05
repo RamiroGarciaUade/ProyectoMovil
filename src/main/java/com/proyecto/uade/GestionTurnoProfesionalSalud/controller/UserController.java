@@ -2,8 +2,10 @@ package com.proyecto.uade.GestionTurnoProfesionalSalud.controller;
 
 import com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command.UserDTO;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command.UserLoginDTO;
+import com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command.UserProfileDTO;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.model.User;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +33,11 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> find(@PathVariable Long id) {
-        User user = userService.find(id);
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(userService.find(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -50,5 +51,15 @@ public class UserController {
     public ResponseEntity<Map<String, String>> login(@RequestBody UserLoginDTO loginDTO) {
         Map<String, String> token = userService.login(loginDTO.getEmail(), loginDTO.getPassword());
         return ResponseEntity.ok(token);
+    }
+
+    // === añadida: editar "Mis Datos" del usuario ===
+    @PutMapping("/{id}/profile")
+    public ResponseEntity<User> updateProfile(
+            @PathVariable Long id,
+            @Valid @RequestBody UserProfileDTO dto
+    ) {
+        User updated = userService.updateProfileById(id, dto);
+        return ResponseEntity.ok(updated);
     }
 }
