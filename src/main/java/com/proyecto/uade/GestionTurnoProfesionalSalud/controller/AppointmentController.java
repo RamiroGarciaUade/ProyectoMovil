@@ -3,7 +3,6 @@ package com.proyecto.uade.GestionTurnoProfesionalSalud.controller;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command.AppointmentDTO;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.model.Appointment;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.service.AppointmentService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -16,33 +15,37 @@ import java.util.List;
 @RestController
 @RequestMapping("/appointment")
 public class AppointmentController {
+
     @Autowired
     private AppointmentService appointmentService;
 
     @PostMapping
-    public ResponseEntity<Appointment> save(@RequestBody AppointmentDTO appointment){
+    public ResponseEntity<Appointment> save(@RequestBody AppointmentDTO appointment) {
         return ResponseEntity.ok(appointmentService.save(appointment));
     }
 
     @GetMapping
-    public ResponseEntity<List<Appointment>> list(){
+    public ResponseEntity<List<Appointment>> list() {
         return ResponseEntity.ok(appointmentService.list());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Appointment> find(@PathVariable Long id){
+    public ResponseEntity<Appointment> find(@PathVariable Long id) {
         Appointment appointment = appointmentService.find(id);
         return ResponseEntity.ok(appointment);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id){
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         appointmentService.delete(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Appointment> update(@PathVariable Long id, @RequestBody AppointmentDTO dto){
+    public ResponseEntity<Appointment> update(
+            @PathVariable Long id,
+            @RequestBody AppointmentDTO dto
+    ) {
         return ResponseEntity.ok(appointmentService.update(id, dto));
     }
 
@@ -71,7 +74,7 @@ public class AppointmentController {
             @RequestParam Long userId,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate referenceDate,
-            @RequestParam(required = false, defaultValue = "all") String time // values: all, past, upcoming
+            @RequestParam(required = false, defaultValue = "all") String time
     ) {
         List<Appointment> results = appointmentService.getAppointmentsForUser(userId, status, referenceDate, time);
         return ResponseEntity.ok(results);
@@ -97,4 +100,10 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.listAvailable());
     }
 
+    // === añadida: listar todos los turnos de un usuario ===
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Appointment>> getByUser(@PathVariable Long userId) {
+        List<Appointment> turns = appointmentService.getAppointmentsByUserId(userId);
+        return ResponseEntity.ok(turns);
+    }
 }
