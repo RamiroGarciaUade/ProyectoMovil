@@ -9,6 +9,7 @@ import com.proyecto.uade.GestionTurnoProfesionalSalud.repository.IAppointmentRep
 import com.proyecto.uade.GestionTurnoProfesionalSalud.repository.IProfessionalRepository;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.repository.IStatusRepository;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.repository.IUserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,20 +22,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AppointmentService implements IService<Appointment, AppointmentDTO>{
-    private IAppointmentRepository iAppointmentRepository;
-    private IUserRepository iUserRepository;
-    private IProfessionalRepository iProfessionalRepository;
-    private IStatusRepository iStatusRepository;
+public class AppointmentService implements IService<Appointment, AppointmentDTO> {
 
-    public AppointmentService(IAppointmentRepository iAppointmentRepository, IUserRepository iUserRepository, IProfessionalRepository iProfessionalRepository, IStatusRepository iStatusRepository) {
+    private final IAppointmentRepository iAppointmentRepository;
+    private final IUserRepository iUserRepository;
+    private final IProfessionalRepository iProfessionalRepository;
+    private final IStatusRepository iStatusRepository;
+
+    @Autowired
+    public AppointmentService(IAppointmentRepository iAppointmentRepository,
+                              IUserRepository iUserRepository,
+                              IProfessionalRepository iProfessionalRepository,
+                              IStatusRepository iStatusRepository) {
         this.iAppointmentRepository = iAppointmentRepository;
         this.iUserRepository = iUserRepository;
         this.iProfessionalRepository = iProfessionalRepository;
         this.iStatusRepository = iStatusRepository;
     }
-
-    @Autowired
 
     @Override
     public List<Appointment> list() {
@@ -59,7 +63,6 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
         Professional professional = iProfessionalRepository.findById(appointment.getProfessionalId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Professional not found"));
 
-        // IGNORAR statusId del DTO y usar siempre el status "disponible"
         Status status = iStatusRepository.findByValue("Disponible")
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Status 'disponible' no encontrado"));
 
@@ -105,12 +108,16 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
                 .collect(Collectors.toList());
     }
 
-
     public List<Appointment> getByProfessional(Long professionalId) {
         return iAppointmentRepository.findByProfessional_Id(professionalId).stream()
                 .peek(this::updateStatusIfExpired)
                 .filter(a -> !(a.getStatus().getValue().equalsIgnoreCase("Disponible") && a.getDate().isBefore(LocalDate.now())))
                 .collect(Collectors.toList());
+    }
+
+    // === añadida: listar todos los turnos de un usuario ===
+    public List<Appointment> getAppointmentsByUserId(Long userId) {
+        return iAppointmentRepository.findByUserId(userId);
     }
 
     private String normalize(String input) {
@@ -132,7 +139,6 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
             }
         }
     }
-
 
     public List<Appointment> searchAppointments(String specialty, String professional, LocalDate date) {
         String normSpecialty = specialty != null ? normalize(specialty) : null;
@@ -168,7 +174,7 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
         LocalDate today = referenceDate != null ? referenceDate : LocalDate.now();
 
         return iAppointmentRepository.findAll().stream()
-                .filter(a -> a.getUser() != null && a.getUser().getId().equals(userId)) // ✅ FIX
+                .filter(a -> a.getUser() != null && a.getUser().getId().equals(userId))
                 .peek(this::updateStatusIfExpired)
                 .filter(a -> {
                     if (status != null) {
@@ -227,8 +233,4 @@ public class AppointmentService implements IService<Appointment, AppointmentDTO>
 
         return iAppointmentRepository.save(appointment);
     }
-
-
-
-
 }
