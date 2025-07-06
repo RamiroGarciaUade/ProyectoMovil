@@ -1,6 +1,7 @@
 package com.proyecto.uade.GestionTurnoProfesionalSalud.controller;
 
 import com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command.AppointmentDTO;
+import com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command.AppointmentViewDTO;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.model.Appointment;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,10 +101,16 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.listAvailable());
     }
 
-    // === añadida: listar todos los turnos de un usuario ===
+    // === añadida: listar todos los turnos de un usuario con DTO de vista ===
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Appointment>> getByUser(@PathVariable Long userId) {
-        List<Appointment> turns = appointmentService.getAppointmentsByUserId(userId);
+    public ResponseEntity<List<AppointmentViewDTO>> getByUser(
+            @PathVariable Long userId
+    ) {
+        List<AppointmentViewDTO> turns = appointmentService
+            .getAppointmentsByUserId(userId)
+            .stream()
+            .map(AppointmentViewDTO::from)
+            .toList();
         return ResponseEntity.ok(turns);
     }
 }
