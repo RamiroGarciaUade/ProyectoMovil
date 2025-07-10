@@ -28,11 +28,6 @@ public class Professional {
     public Professional(){
 
     }
-    public Professional(Long id, String firstName, String lastName){
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
 
     public Professional(Long id, String firstName, String lastName, Specialty specialty) {
         this.id = id;
