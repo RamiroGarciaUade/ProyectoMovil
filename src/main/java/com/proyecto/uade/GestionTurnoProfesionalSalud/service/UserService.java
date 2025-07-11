@@ -110,13 +110,18 @@ public class UserService implements IService<User, UserDTO> {
     /**
      * Autentica y genera JWT.
      */
-    public Map<String, String> login(String email, String password) {
-        User user = iUserRepository.findByEmail(email)
-                .filter(u -> passwordEncoder.matches(password, u.getPassword()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
-        String token = jwtUtil.generateToken(user.getEmail());
-        return Collections.singletonMap("token", token);
-    }
+    public Map<String, Object> login(String email, String password) {
+    User user = iUserRepository.findByEmail(email)
+            .filter(u -> passwordEncoder.matches(password, u.getPassword()))
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
+    String token = jwtUtil.generateToken(user.getEmail());
+
+    return Map.of(
+            "token", token,
+            "user", user
+    );
+}
 
     /**
      * Actualiza nombre, apellido y teléfono (mis datos).
