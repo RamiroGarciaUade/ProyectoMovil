@@ -48,9 +48,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody UserLoginDTO loginDTO) {
-        Map<String, String> token = userService.login(loginDTO.getEmail(), loginDTO.getPassword());
-        return ResponseEntity.ok(token);
+    public ResponseEntity<Map<String, Object>> login(@RequestBody UserLoginDTO loginDTO) {
+    Map<String, Object> response = userService.login(loginDTO.getEmail(), loginDTO.getPassword());
+    return ResponseEntity.ok(response);
     }
 
     // === añadida: editar "Mis Datos" del usuario ===
