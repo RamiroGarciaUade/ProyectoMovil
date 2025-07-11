@@ -10,7 +10,9 @@ public class AppointmentViewDTO {
     private LocalTime startTime;
     private String professionalName;
     private String specialty;
-    private String name; // Campo name del turno (Appointment.name)
+    private String name;      // Campo name del turno
+    private Long statusId;    // ID del estado
+    private String statusValue; // Valor del estado, opcional
 
     public AppointmentViewDTO() {}
 
@@ -24,9 +26,12 @@ public class AppointmentViewDTO {
         dto.setSpecialty(
             appointment.getProfessional().getSpecialty().getName()
         );
-
-        dto.setName(appointment.getName()); // ⬅️ Aquí toma el nombre directamente del turno
-
+        dto.setName(appointment.getName());
+        // Nuevos campos de status
+        if (appointment.getStatus() != null) {
+            dto.setStatusId(appointment.getStatus().getId());
+            dto.setStatusValue(appointment.getStatus().getValue());
+        }
         return dto;
     }
 
@@ -70,5 +75,21 @@ public class AppointmentViewDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(Long statusId) {
+        this.statusId = statusId;
+    }
+
+    public String getStatusValue() {
+        return statusValue;
+    }
+
+    public void setStatusValue(String statusValue) {
+        this.statusValue = statusValue;
     }
 }
