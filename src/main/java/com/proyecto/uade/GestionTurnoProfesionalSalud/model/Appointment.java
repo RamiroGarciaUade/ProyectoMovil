@@ -7,9 +7,11 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
 @Entity
-@Table(name="appointments")
+@Table(name = "appointments")
 public class Appointment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,8 +32,12 @@ public class Appointment {
 
     @Column
     private LocalTime finishTime;
+
     @Column
     private String notes;
+
+    @Column(name = "name")
+    private String name; // 👈 nuevo campo
 
     @ManyToOne
     @JoinColumn(name = "status_id", referencedColumnName = "id")
@@ -41,7 +47,7 @@ public class Appointment {
     @JsonIgnore
     private Set<MedicalExam> medicalExams = new HashSet<>();
 
-    //Constructors
+    // Constructores
 
     public Appointment() {
     }
@@ -87,9 +93,7 @@ public class Appointment {
         this.finishTime = finishTime;
     }
 
-
-
-    //Getters
+    // Getters
 
     public Long getId() {
         return id;
@@ -119,6 +123,10 @@ public class Appointment {
         return notes;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public Status getStatus() {
         return status;
     }
@@ -127,7 +135,7 @@ public class Appointment {
         return medicalExams;
     }
 
-    //Setters
+    // Setters
 
     public void setId(Long id) {
         this.id = id;
@@ -155,6 +163,10 @@ public class Appointment {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setStatus(Status status) {
