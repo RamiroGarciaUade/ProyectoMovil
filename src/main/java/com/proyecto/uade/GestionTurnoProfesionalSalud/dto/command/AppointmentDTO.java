@@ -3,11 +3,9 @@ package com.proyecto.uade.GestionTurnoProfesionalSalud.dto.command;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.model.Appointment;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.model.Professional;
 import com.proyecto.uade.GestionTurnoProfesionalSalud.model.Status;
-import com.proyecto.uade.GestionTurnoProfesionalSalud.model.User;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-
 
 public class AppointmentDTO {
     public static final int NOTES_MAX_LENGTH = 5000;
@@ -16,18 +14,15 @@ public class AppointmentDTO {
     private Long professionalId;
 
     private LocalDate date;
-
     private LocalTime startTime;
-
     private LocalTime finishTime;
     private String notes;
     private Long statusId;
 
-    //Constructors
-    public AppointmentDTO() {
-    }
+    private String name; // 👈 nombre completo del profesional
 
-    // Usado al crear turnos (libres, sin user)
+    public AppointmentDTO() {}
+
     public AppointmentDTO(Long id, Long professionalId, LocalDate date, LocalTime startTime, LocalTime finishTime, String notes, Long statusId) {
         this.id = id;
         this.professionalId = professionalId;
@@ -66,16 +61,14 @@ public class AppointmentDTO {
         this.statusId = statusId;
     }
 
-
-    //methods
-    public Appointment newAppointment( Professional professional, Status forcedStatus) {
+    public Appointment newAppointment(Professional professional, Status forcedStatus) {
         return new Appointment(
                 this.id,
                 professional,
                 this.date,
                 this.startTime,
                 this.finishTime,
-                forcedStatus // el status se setea desde el servicio
+                forcedStatus
         );
     }
 
@@ -111,73 +104,43 @@ public class AppointmentDTO {
         return appointment;
     }
 
+    // Getters
 
+    public Long getId() { return id; }
 
-    //Getters y setters
+    public Long getUserId() { return userId; }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getProfessionalId() { return professionalId; }
 
-    public Long getUserId() {
-        return userId;
-    }
+    public LocalDate getDate() { return date; }
 
-    public Long getProfessionalId() {
-        return professionalId;
-    }
+    public LocalTime getStartTime() { return startTime; }
 
-    public LocalDate getDate() {
-        return date;
-    }
+    public LocalTime getFinishTime() { return finishTime; }
 
-    public LocalTime getStartTime() {
-        return startTime;
-    }
+    public String getNotes() { return notes; }
 
-    public LocalTime getFinishTime() {
-        return finishTime;
-    }
+    public Long getStatusId() { return statusId; }
 
-    public String getNotes() {
-        return notes;
-    }
+    public String getName() { return name; }
 
-    public Long getStatusId() {
-        return statusId;
-    }
+    // Setters
 
-    //Setters
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setUserId(Long userId) { this.userId = userId; }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+    public void setProfessionalId(Long professionalId) { this.professionalId = professionalId; }
 
-    public void setProfessionalId(Long professionalId) {
-        this.professionalId = professionalId;
-    }
+    public void setDate(LocalDate date) { this.date = date; }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
+    public void setStartTime(LocalTime startTime) { this.startTime = startTime; }
 
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
+    public void setFinishTime(LocalTime finishTime) { this.finishTime = finishTime; }
 
-    public void setFinishTime(LocalTime finishTime) {
-        this.finishTime = finishTime;
-    }
+    public void setNotes(String notes) { this.notes = notes; }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
+    public void setStatusId(Long statusId) { this.statusId = statusId; }
 
-    public void setStatusId(Long statusId) {
-        this.statusId = statusId;
-    }
+    public void setName(String name) { this.name = name; }
 }
