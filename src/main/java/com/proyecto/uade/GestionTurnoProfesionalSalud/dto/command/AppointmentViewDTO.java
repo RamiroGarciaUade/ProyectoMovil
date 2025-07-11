@@ -10,6 +10,7 @@ public class AppointmentViewDTO {
     private LocalTime startTime;
     private String professionalName;
     private String specialty;
+    private String userName; // 👈 nuevo campo
 
     public AppointmentViewDTO() {}
 
@@ -23,8 +24,15 @@ public class AppointmentViewDTO {
         dto.setSpecialty(
             appointment.getProfessional().getSpecialty().getName()
         );
+
+        if (appointment.getUser() != null) {
+            dto.setUserName(appointment.getUser().getFirstName()); // 👈 solo nombre del usuario
+        }
+
         return dto;
     }
+
+    // Getters y setters
 
     public LocalDate getDate() {
         return date;
@@ -56,5 +64,13 @@ public class AppointmentViewDTO {
 
     public void setSpecialty(String specialty) {
         this.specialty = specialty;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
